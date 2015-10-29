@@ -23,7 +23,7 @@ SESSION_SAVE='files'
 
 GIT_BRANCH='develop'
 
-SAMPLEDATA_VER='~1.0.0-beta'
-INSTALL_SAMPLEDATA=0
+INSTALL_SAMPLEDATA=1
+SAMPLE_ROOT='/var/www/magento2-sample-data'
 
 GITHUB_TOKEN='' # tinyurl.com/mage2-ratelimit
