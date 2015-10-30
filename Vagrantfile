@@ -10,6 +10,6 @@ Vagrant.configure(2) do |config|
     vb.name = "magento2"
   end
 
-  config.vm.provision "shell", path: "magento2.sh"
+  config.vm.provision "shell", path: "magento2.sh", privileged: false
 
 end

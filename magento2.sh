@@ -13,17 +13,18 @@ sudo apt-get -q update
 sudo composer self-update --no-progress
 makephp 7
 
-# Disable Apache & Prepare Nginx/PHP-FPM
-sudo service apache2 stop > /dev/null 2>&1
-sudo update-rc.d apache2 disable > /dev/null 2>&1
-sudo service php-fpm stop > /dev/null 2>&1
-sudo service nginx stop > /dev/null 2>&1
+# Stop/Disable Existing Web Services
+sudo crontab -u vagrant -r          > /dev/null 2>&1
+sudo service apache2 stop           > /dev/null 2>&1
+sudo update-rc.d apache2 disable    > /dev/null 2>&1
+sudo service php-fpm stop           > /dev/null 2>&1
+sudo service nginx stop             > /dev/null 2>&1
 
+# Prepare Nginx & PHP-FPM
 sudo rm /etc/nginx/conf.d/* 
-sudo cp -f /vagrant/magento2.conf /etc/nginx/conf.d/
 sudo sed -i "s|www-data|vagrant|" /etc/nginx/nginx.conf
 sudo sed -i "s|www-data|vagrant|" /usr/local/etc/php-fpm.d/www.conf
-sudo sed -i "s|/var/www/magento2|$MAGE_ROOT|" /etc/nginx/conf.d/magento2.conf
+sudo sed "s|/var/www/magento2|$MAGE_ROOT|" /vagrant/magento2.conf | sudo tee /etc/nginx/conf.d/magento2.conf
 
 # Configure MySQL
 mysql -uroot -e "DROP DATABASE IF EXISTS $DB_NAME"
@@ -85,13 +86,13 @@ if [ "$INSTALL_SAMPLEDATA" == "1" ]; then
 fi
 
 # Post-Install
-sed -i -e "\$aulimit -s 65536" -e "/ulimit -s 65536/d" /home/vagrant/.bashrc
 sed -i -e "\$aalias magento='$MAGE_EXEC'" -e "/alias magento=.*/d" /home/vagrant/.bash_aliases
-crontab -r 2>/dev/null; echo "*/1 * * * * php $MAGE_EXEC cron:run &" | crontab -u vagrant -
-
-fixPermissions "$MAGE_ROOT"
 $MAGE_EXEC deploy:mode:set developer
 $MAGE_EXEC indexer:reindex
-$MAGE_EXEC cache:flush
+$MAGE_EXEC cache:enable
+fixPermissions "$MAGE_ROOT"
+
+# Start Cron
+echo "*/1 * * * * php $MAGE_EXEC cron:run &" | crontab -u vagrant -
 
 echo "=== $(date): Magento2 Setup Complete! ==="
