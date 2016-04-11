@@ -4,6 +4,8 @@ A preconfigured [Vagrant box](https://atlas.hashicorp.com/rasmus/boxes/php7dev)
 for testing [Magento2](https://github.com/magento/magento2) 
 on [PHP7](http://php7-tutorial.com/), via nginx/PHP-FPM server in Debian8.
 
+Status: **Abandoned** (Recommended: [paliarush/magento2-vagrant-for-developers](https://github.com/paliarush/magento2-vagrant-for-developers))
+
 ## Prerequisites
 * [Vagrant](https://www.vagrantup.com/)  
 * [VirtualBox](https://www.virtualbox.org/)  
